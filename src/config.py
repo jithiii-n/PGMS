@@ -4,7 +4,7 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your_secret_key'  # Replace with a secure key
-    BREVO_API_KEY = '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'
+    #BREVO_API_KEY = removed for security
     MAIL_SERVER = 'smtp-relay.brevo.com'
     MAIL_PORT = 587
     MAIL_USERNAME = '7ae371001@smtp-brevo.com'

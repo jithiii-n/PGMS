@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .action-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .action-btn:hover {
+            background-color: #45a049;
+        }
+
+        .resolved {
+            background-color: #e74c3c;
+        }
+
+        .resolved:hover {
+            background-color: #c0392b;
+        }
+
+        .status-resolved {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-in-progress {
+            color: orange;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Department Dashboard</h2>
+    <div class="container">
+        <h3>Assigned Complaints</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Image</th>
+                <th>Location</th>
+                <th>Classification</th>
+                <th>Action</th>
+            </tr>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.id }}</td>
+                <td>{{ complaint.category }}</td>
+                <td>{{ complaint.description }}</td>
+                <td class="{{ 'status-resolved' if complaint.status == 'Resolved' else 'status-in-progress' }}">
+                    {{ complaint.status }}
+                </td>
+                <td><img src="{{ url_for('static', filename='uploads/' + complaint.image) }}" alt="Complaint Image" width="100"></td>
+                <td>{{ complaint.location }}</td>
+                <td>{{ complaint.classification }}</td>
+                <td>
+                    <a href="{{ url_for('view_complaint', complaint_id=complaint.id) }}" class="action-btn">View</a>
+                    {% if complaint.status != 'Resolved' %}
+                    <a href="{{ url_for('mark_resolved', complaint_id=complaint.id) }}" class="action-btn resolved">Mark Resolved</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

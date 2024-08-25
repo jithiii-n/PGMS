@@ -1,0 +1,44 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Complaint</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Complaint Details</h2>
+        <p><strong>ID:</strong> {{ complaint.id }}</p>
+        <p><strong>Category:</strong> {{ complaint.category }}</p>
+        <p><strong>Description:</strong> {{ complaint.description }}</p>
+        <p><strong>Status:</strong> {{ complaint.status }}</p>
+        <p><strong>Location:</strong> {{ complaint.location }}</p>
+        <p><strong>Classification:</strong> {{ complaint.classification }}</p>
+        <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image">
+        <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

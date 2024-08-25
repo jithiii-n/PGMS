@@ -1,0 +1,181 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="submit"], input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        input[type="button"] {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-color: #c82333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .action-btn:hover {
+            text-decoration: underline;
+        }
+
+        .remove-btn {
+            color: #dc3545;
+        }
+
+        .remove-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    <div class="container">
+        <div class="box">
+            <h3>Manage Departments</h3>
+            <form action="{{ url_for('add_department') }}" method="POST">
+                <label for="deptid">Department ID:</label>
+                <input type="text" id="deptid" name="deptid" required>
+
+                <label for="name">Department Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="district">District:</label>
+                <input type="text" id="district" name="district" required>
+
+                <input type="submit" value="Add Department">
+            </form>
+
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Login ID</th>
+                    <th>Department Name</th>
+                    <th>District</th>
+                    <th>Action</th>
+                </tr>
+                {% for dept in departments %}
+                <tr>
+                    <td>{{ dept.id }}</td>
+                    <td>{{ dept.lid }}</td>
+                    <td>{{ dept.name }}</td>
+                    <td>{{ dept.district }}</td>
+                    <td><a href="{{ url_for('remove_department', dept_id=dept.id) }}" class="action-btn remove-btn">Remove</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="box">
+            <h3>Monitor Complaints</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint.id }}</td>
+                    <td>{{ complaint.category }}</td>
+                    <td>{{ complaint.description }}</td>
+                    <td>{{ complaint.status }}</td>
+                    <td><a href="{{ url_for('view_complaint', complaint_id=complaint.id) }}" class="action-btn">View</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- Logout Button -->
+        <form action="{{ url_for('admin_logout') }}" method="POST">
+            <input type="button" value="Logout" onclick="this.form.submit();">
+        </form>
+    </div>
+</body>
+</html>

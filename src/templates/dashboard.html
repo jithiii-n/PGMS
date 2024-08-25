@@ -1,0 +1,137 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .nav-bar {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .nav-bar a {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .nav-bar a.logout-btn {
+            background-color: #f44336;
+        }
+
+        .nav-bar a.logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .action-btn, .file-complaint-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .file-complaint-btn {
+            margin: 20px auto;
+            display: block;
+            width: fit-content;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <!-- Login button -->
+        <a href="{{ url_for('auth.login') }}">Login</a>
+        <!-- Logout button -->
+        <form action="{{ url_for('auth.logout') }}" method="post" style="display: inline;">
+    <button type="submit" class="nav-bar a logout-btn">Logout</button>
+</form>
+
+    </div>
+
+    <h2>Your Complaints</h2>
+
+    <!-- Button to go to the complaint filing page -->
+    <a href="{{ url_for('user.complaints') }}" class="file-complaint-btn">File a Complaint</a>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Status</th>
+            <th>Classification</th>
+            <th>Action</th>
+        </tr>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.id }}</td>
+            <td>{{ complaint.location }}</td>
+            <td>{{ complaint.description }}</td>
+            <td>
+                {% if complaint.image_filename %}
+                <a href="{{ url_for('static', filename='uploads/' ~ complaint.image_filename) }}" target="_blank">View Image</a>
+                {% else %}
+                No Image
+                {% endif %}
+            </td>
+            <td>{{ complaint.status }}</td>
+            <td>{{ complaint.classification }}</td>
+            <td><a href="#" class="action-btn">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

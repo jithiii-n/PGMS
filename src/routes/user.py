@@ -1,17 +1,29 @@
-# routes/user.py
-
-from flask import Blueprint, render_template, redirect, url_for, request, flash, session, current_app
-from utils.db import iud, select_all, selectone
-from utils.decorators import admin_required
-from models.model_loader import load_classification_model
-
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session, send_file, current_app
 from werkzeug.utils import secure_filename
-from PIL import Image
 import os
-import numpy as np
+from io import BytesIO
+from weasyprint import HTML
+from utils.db import iud, select_all, selectone
 from datetime import datetime
+from PIL import Image
+import numpy as np
 
 user_bp = Blueprint('user', __name__)
+
+@user_bp.route('/view_complaint/<int:complaint_id>')
+def view_complaint(complaint_id):
+    # Fetch the complaint details based on the complaint_id
+    qry = '''
+        SELECT * FROM complaint WHERE id = %s
+    '''
+    complaint = selectone(qry, (complaint_id,))
+
+    if complaint:
+        return render_template('view_complaint.html', complaint=complaint)
+    else:
+        flash('Complaint not found.')
+        return redirect(url_for('user.dashboard'))  # Redirect to dashboard if complaint is not found
+
 
 @user_bp.route('/dashboard')
 def dashboard():
@@ -48,12 +60,8 @@ def submit_complaint():
             raise ValueError("User ID not found in session.")
 
         # Check if the user ID exists in the user table
-        qry_check_user = '''
-            SELECT * FROM user WHERE lid = %s
-        '''
+        qry_check_user = 'SELECT * FROM user WHERE lid = %s'
         user_exists = selectone(qry_check_user, (lid,))
-        print(f"User exists in user table: {user_exists}")
-
         if not user_exists:
             raise ValueError("User ID does not exist in the user table.")
 
@@ -61,6 +69,9 @@ def submit_complaint():
         location = request.form.get('location')
         description = request.form.get('description')
         image = request.files.get('image')
+
+        if not location or not description:
+            raise ValueError("Location and description are required.")
 
         # Ensure the uploads directory exists
         uploads_dir = os.path.join(current_app.root_path, 'static', 'uploads')
@@ -88,16 +99,18 @@ def submit_complaint():
             class_labels = ['normal', 'potholes', 'waste']
             classification = class_labels[np.argmax(predictions)]
 
-            # Print classification for debugging
             print(f"Image classified as: {classification}")
 
         # Map classification to deptid
         classification_to_deptid = {
-            'normal': 0,
-            'potholes': 1,
-            'waste': 2
+            'normal': 0,  # Ensure this ID exists in your departments table
+            'potholes': 1,  # Ensure this ID exists in your departments table
+            'waste': 2  # Or 2, depending on your classification needs
         }
-        deptid = classification_to_deptid.get(classification, 0)  # Default to 0 if classification not found
+
+        deptid = classification_to_deptid.get(classification, None)
+        if deptid is None:
+            raise ValueError(f"Classification '{classification}' is not mapped to a valid department.")
 
         # Get the current date
         current_date = datetime.now().strftime('%Y-%m-%d')
@@ -115,3 +128,15 @@ def submit_complaint():
         print(f"An error occurred: {e}")
 
     return redirect(url_for('user.dashboard'))
+
+
+
+@user_bp.route('/download_pdf/<int:complaint_id>')
+def download_pdf(complaint_id):
+    pdf_filename = f'report_{complaint_id}.pdf'
+    pdf_path = os.path.join(current_app.root_path, 'static', 'reports', pdf_filename)
+    if os.path.exists(pdf_path):
+        return send_file(pdf_path, download_name=pdf_filename, as_attachment=True)
+    else:
+        flash('Report not found.')
+        return redirect(url_for('user.dashboard'))

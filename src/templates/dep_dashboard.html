@@ -17,13 +17,31 @@
             color: #333;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .nav-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .nav-bar a, .nav-bar button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+            border: none;
+        }
+
+        .nav-bar a.logout-btn {
+            background-color: #f44336;
+        }
+
+        .nav-bar a.logout-btn:hover {
+            background-color: #d32f2f;
         }
 
         table {
@@ -77,6 +95,14 @@
             background-color: #c0392b;
         }
 
+        .recheck {
+            background-color: #f39c12;
+        }
+
+        .recheck:hover {
+            background-color: #e67e22;
+        }
+
         .status-resolved {
             color: green;
             font-weight: bold;
@@ -86,16 +112,97 @@
             color: orange;
             font-weight: bold;
         }
+
+        /* Drawer styles */
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            z-index: 1000;
+        }
+
+        .drawer a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .drawer a:hover {
+            background-color: #575757;
+        }
+
+        .drawer .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            margin-left: 50px;
+        }
+
+        .drawer-submenu {
+            display: none;
+            padding-left: 15px;
+        }
+
+        .drawer a.toggle-submenu {
+            cursor: pointer;
+        }
+
+        .drawer a.toggle-submenu:after {
+            content: '\25BC'; /* Down arrow */
+            float: right;
+        }
+
+        .drawer a.toggle-submenu.active:after {
+            content: '\25B2'; /* Up arrow */
+        }
+
+        .open-drawer {
+            font-size: 30px;
+            cursor: pointer;
+            color: #333;
+            padding-left: 10px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+        }
     </style>
 </head>
 <body>
+    <span class="open-drawer">&#9776; Menu</span>
+
+    <div id="myDrawer" class="drawer">
+        <a href="javascript:void(0)" class="close-btn">&times;</a>
+        <a href="#">Report</a>
+        <a class="toggle-submenu">Tools</a>
+        <div class="drawer-submenu">
+            <a href="{{ url_for('department.department_dashboard') }}">Recheck Image</a>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <!-- Logout button -->
+        <form action="{{ url_for('department.department_logout') }}" method="post" style="display: inline;">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
     <h2>Department Dashboard</h2>
     <div class="container">
         <h3>Assigned Complaints</h3>
         <table>
             <tr>
                 <th>ID</th>
-                <th>Category</th>
                 <th>Description</th>
                 <th>Status</th>
                 <th>Image</th>
@@ -106,23 +213,44 @@
             {% for complaint in complaints %}
             <tr>
                 <td>{{ complaint.id }}</td>
-                <td>{{ complaint.category }}</td>
                 <td>{{ complaint.description }}</td>
                 <td class="{{ 'status-resolved' if complaint.status == 'Resolved' else 'status-in-progress' }}">
                     {{ complaint.status }}
                 </td>
-                <td><img src="{{ url_for('static', filename='uploads/' + complaint.image) }}" alt="Complaint Image" width="100"></td>
+                <td>
+                    <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image" width="100">
+                </td>
                 <td>{{ complaint.location }}</td>
                 <td>{{ complaint.classification }}</td>
                 <td>
-                    <a href="{{ url_for('view_complaint', complaint_id=complaint.id) }}" class="action-btn">View</a>
                     {% if complaint.status != 'Resolved' %}
-                    <a href="{{ url_for('mark_resolved', complaint_id=complaint.id) }}" class="action-btn resolved">Mark Resolved</a>
+                        <form action="{{ url_for('department.mark_resolved', complaint_id=complaint.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="action-btn resolved">Mark Resolved</button>
+                        </form>
+                        <form action="{{ url_for('department.recheck_complaint', complaint_id=complaint.id) }}" method="post" style="display:inline;">
+                            <button type="submit" class="action-btn recheck">Recheck Image</button>
+                        </form>
                     {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </table>
     </div>
+
+    <script>
+        document.querySelector('.open-drawer').addEventListener('click', function() {
+            document.getElementById('myDrawer').style.left = '0';
+        });
+
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            document.getElementById('myDrawer').style.left = '-250px';
+        });
+
+        document.querySelector('.toggle-submenu').addEventListener('click', function() {
+            const submenu = document.querySelector('.drawer-submenu');
+            submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+            this.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>

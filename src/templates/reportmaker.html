@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"], input[type="date"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 150px;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .timestamp {
+            margin-top: 20px;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create a Department Report</h2>
+       <form action="{{ url_for('department.report_maker', complaint_id=complaint.id) }}" method="post">
+    <!-- form fields here -->
+
+
+            <label for="date">Select Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="department">Select Department:</label>
+            <select id="department" name="department" required>
+                <option value="PWD">PWD</option>
+                <option value="CORPORATION">CORPORATION</option>
+                <option value="KSEB">KSEB</option>
+            </select>
+
+            <label for="report-details">Detailed Report:</label>
+            <textarea id="report-details" name="report_details" placeholder="Write the details of the action taken..." required></textarea>
+
+            <label for="additional-info">Additional Information:</label>
+            <textarea id="additional-info" name="additional_info" placeholder="Include any additional information..."></textarea>
+
+            <label for="officer-name">Officer in Charge:</label>
+            <input type="text" id="officer-name" name="officer_name" placeholder="Enter the officer's name..." required>
+
+            <label for="reference-no">Reference Number:</label>
+            <input type="text" id="reference-no" name="reference_no" placeholder="Enter the reference number..." required>
+
+            <button type="submit" class="submit-btn" onclick="addTimestamp()">Submit Report</button>
+        </form>
+
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+
+    <script>
+        function addTimestamp() {
+            const now = new Date();
+            const timestampDiv = document.getElementById('timestamp');
+            timestampDiv.textContent = 'Report submitted on: ' + now.toLocaleString();
+        }
+    </script>
+</body>
+</html>

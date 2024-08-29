@@ -1,5 +1,3 @@
-# routes/auth.py
-
 from flask import Blueprint, render_template, redirect, url_for, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.db import iud, selectone
@@ -69,29 +67,45 @@ def login():
         email = request.form.get('email').strip()
         password = request.form.get('password').strip()
 
-        qry_login = '''
-            SELECT * FROM login WHERE username = %s
-        '''
-        login_user = selectone(qry_login, (email,))
+        if not email or not password:
+            flash('Email and password are required.')
+            return redirect(url_for('auth.login'))
 
-        if login_user and check_password_hash(login_user['password'], password):
-            # Check if the user is an admin
-            if login_user.get('role') == 'admin':
-                session['admin_id'] = login_user['id']  # Set session for admin
-                return redirect(url_for('admin.admin_dashboard'))
-            else:
-                # Regular user login
-                qry_user = '''
-                    SELECT lid FROM user WHERE email = %s
-                '''
-                user = selectone(qry_user, (email,))
-                if user:
-                    session['user_id'] = user['lid']  # Set session for regular user
-                    return redirect(url_for('user.dashboard'))
+        try:
+            qry_login = '''
+                SELECT * FROM login WHERE username = %s
+            '''
+            login_user = selectone(qry_login, (email,))
+            print(f"Login user: {login_user}")  # Debugging statement
+
+            if login_user and check_password_hash(login_user['password'], password):
+                print(f"User role: {login_user.get('role')}")  # Debugging statement
+                if login_user.get('role') == 'admin':
+                    session['admin_id'] = login_user['id']  # Set session for admin
+                    print(f"Session admin_id set to: {session.get('admin_id')}")  # Debugging statement
+                    return redirect(url_for('admin.admin_dashboard'))
+                elif login_user.get('role') == 'department':
+                    session['department_id'] = login_user.get('department_id')  # Set session for department
+                    print(f"Session department_id set to: {session.get('department_id')}")  # Debugging statement
+                    return redirect(url_for('department.department_dashboard'))
                 else:
-                    flash('User not found.')
-        else:
-            flash('Invalid login credentials.')
+                    # Regular user login
+                    qry_user = '''
+                        SELECT lid FROM user WHERE email = %s
+                    '''
+                    user = selectone(qry_user, (email,))
+                    if user:
+                        session['user_id'] = user['lid']  # Set session for regular user
+                        print(f"Session user_id set to: {session.get('user_id')}")  # Debugging statement
+                        return redirect(url_for('user.dashboard'))
+                    else:
+                        flash('User not found in user table.')
+            else:
+                flash('Invalid login credentials.')
+
+        except Exception as e:
+            flash(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")
 
     return render_template('login.html')
 
@@ -99,6 +113,7 @@ def login():
 def logout():
     session.pop('user_id', None)
     session.pop('admin_id', None)
+    session.pop('department_id', None)
     flash('You have been logged out.')
     return redirect(url_for('auth.login'))
 

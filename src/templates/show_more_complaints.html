@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show More Complaints</title>
+    <style>
+        /* Default theme is dark */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #121212; /* Dark theme background */
+            color: #e0e0e0; /* Light text color for dark theme */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Light theme styles */
+        body.light-theme {
+            background-color: #f0f0f0; /* Light theme background */
+            color: #000; /* Dark text color for light theme */
+        }
+
+        body.light-theme .container {
+            background: #fff; /* Lighter background for the container */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #333; /* Dark border color */
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2c2c2c; /* Darker background for header */
+        }
+
+        .action-btn {
+            text-decoration: none;
+            color: #00aaff; /* Bright color for links/buttons */
+        }
+
+        .action-btn:hover {
+            text-decoration: underline;
+        }
+
+        .img-container {
+            width: 100px; /* Adjust as needed */
+            height: 100px; /* Adjust as needed */
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #e0e0e0;
+        }
+
+        .back-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #0077cc; /* Button color */
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background-color: #005fa3; /* Darker shade on hover */
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <h2>All Complaints</h2>
+    <div class="container">
+        <table>
+            <tr>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Complaint Image</th>
+                <th>Analysis</th>
+            </tr>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.department_name }}</td>
+                <td>{{ complaint.status }}</td>
+                <td class="img-container">
+                    <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image">
+                </td>
+                <td><a href="{{ url_for('admin.analysis', dept_id=complaint.deptid) }}" class="action-btn">Analysis</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Link to go back to the dashboard -->
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="back-btn">Back to Dashboard</a>
+
+    <!-- Footer with Contact and Copyright Information -->
+    <div class="footer">
+        <p>Contact us at: <a href="mailto:support@example.com" style="color: #00aaff;">support@example.com</a></p>
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+    </div>
+</body>
+</html>

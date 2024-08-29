@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Analysis</title>
+</head>
+<body>
+    <h2>Department Analysis</h2>
+
+    <!-- Chart -->
+    <div>
+        <h3>Performance Overview</h3>
+        <img src="data:image/png;base64,{{ chart_data }}" alt="Department Performance Chart"/>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <a href="{{ url_for('admin.admin_dashboard') }}">Back to Dashboard</a>
+
+</body>
+</html>

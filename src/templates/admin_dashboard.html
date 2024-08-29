@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,73 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
+        /* Default theme is dark */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-color: #121212; /* Dark theme background */
+            color: #e0e0e0; /* Light text color for dark theme */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Light theme styles */
+        body.light-theme {
+            background-color: #f0f0f0; /* Light theme background */
+            color: #000; /* Dark text color for light theme */
+        }
+
+        body.light-theme .container {
+            background: #fff; /* Lighter background for the container */
+        }
+
+        body.light-theme .drawer {
+            background: #fff; /* Light background for drawer */
+            border-left: 1px solid #ddd; /* Lighter border for drawer */
+        }
+
+        body.light-theme .drawer-header {
+            color: #000; /* Dark text color for drawer header */
+        }
+
+        body.light-theme .drawer-close {
+            color: #000; /* Dark text color for drawer close button */
+        }
+
+        body.light-theme .theme-toggle-btn {
+            background: #0077cc; /* Darker shade for light theme button */
+        }
+
+        body.light-theme .footer {
+            color: #000; /* Dark text color for footer */
+        }
+
+        body.light-theme a {
+            color: #0077cc; /* Link color for light theme */
         }
 
         .container {
             max-width: 1200px;
             margin: auto;
-            background: #fff;
+            background: #1e1e1e; /* Darker background for the container */
             padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transition: background 0.3s;
         }
 
-        h2 {
+        h2, h3 {
             text-align: center;
             margin-bottom: 20px;
-        }
-
-        .box {
-            margin-bottom: 30px;
-        }
-
-        h3 {
-            margin-top: 0;
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        input[type="text"], input[type="submit"], input[type="button"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        input[type="button"] {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        input[type="button"]:hover {
-            background-color: #c82333;
+            color: #e0e0e0; /* Light text color */
         }
 
         table {
@@ -82,7 +74,7 @@
         }
 
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #333; /* Dark border color */
         }
 
         th, td {
@@ -91,91 +83,186 @@
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #2c2c2c; /* Darker background for header */
         }
 
-        .action-btn {
+        .action-btn, .remove-btn {
             text-decoration: none;
-            color: #007bff;
+            color: #00aaff; /* Bright color for links/buttons */
         }
 
-        .action-btn:hover {
+        .action-btn:hover, .remove-btn:hover {
             text-decoration: underline;
         }
 
-        .remove-btn {
-            color: #dc3545;
+        .img-container {
+            width: 100px; /* Adjust as needed */
+            height: 100px; /* Adjust as needed */
+            overflow: hidden;
         }
 
-        .remove-btn:hover {
-            text-decoration: underline;
+        .img-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Drawer Styles */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 300px;
+            background: #1e1e1e; /* Dark background for drawer */
+            border-left: 1px solid #333; /* Darker border for drawer */
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 15px;
+            border-bottom: 1px solid #333; /* Darker border for drawer header */
+            font-weight: bold;
+            color: #e0e0e0; /* Light text color */
+        }
+
+        .drawer-body {
+            padding: 15px;
+        }
+
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #e0e0e0; /* Light text color */
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .drawer-close:hover {
+            color: #00aaff; /* Bright color for hover */
+        }
+
+        .theme-toggle-btn {
+            background: #00aaff; /* Bright color for button */
+            color: #fff; /* White text for button */
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .theme-toggle-btn:hover {
+            background: #0077cc; /* Darker shade on hover */
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #e0e0e0;
+        }
+
+        .drawer-toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #00aaff; /* Bright color for button */
+            color: #fff; /* White text for button */
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+
+        .drawer-toggle-btn:hover {
+            background: #0077cc; /* Darker shade on hover */
         }
     </style>
+    <script>
+        function toggleDrawer() {
+            document.querySelector('.drawer').classList.toggle('open');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const isLight = body.classList.toggle('light-theme');
+
+            // Update button text based on current theme
+            const themeText = isLight ? 'Dark Theme' : 'Light Theme';
+            document.getElementById('theme-toggle-btn').textContent = themeText;
+        }
+
+        // Ensure the button reflects the current theme on page load
+        window.onload = function() {
+            const body = document.body;
+            const isLight = body.classList.contains('light-theme');
+            const themeText = isLight ? 'Dark Theme' : 'Light Theme';
+            document.getElementById('theme-toggle-btn').textContent = themeText;
+        };
+    </script>
 </head>
-<body>
+<body class="dark-theme">
+    <button class="drawer-toggle-btn" onclick="toggleDrawer()">☰</button>
+
     <h2>Admin Dashboard</h2>
     <div class="container">
-        <div class="box">
-            <h3>Manage Departments</h3>
-            <form action="{{ url_for('add_department') }}" method="POST">
-                <label for="deptid">Department ID:</label>
-                <input type="text" id="deptid" name="deptid" required>
+        <button onclick="window.location.href='{{ url_for('admin.add_department_page') }}'">Add Department</button>
 
-                <label for="name">Department Name:</label>
-                <input type="text" id="name" name="name" required>
-
-                <label for="district">District:</label>
-                <input type="text" id="district" name="district" required>
-
-                <input type="submit" value="Add Department">
-            </form>
-
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Login ID</th>
-                    <th>Department Name</th>
-                    <th>District</th>
-                    <th>Action</th>
-                </tr>
-                {% for dept in departments %}
-                <tr>
-                    <td>{{ dept.id }}</td>
-                    <td>{{ dept.lid }}</td>
-                    <td>{{ dept.name }}</td>
-                    <td>{{ dept.district }}</td>
-                    <td><a href="{{ url_for('remove_department', dept_id=dept.id) }}" class="action-btn remove-btn">Remove</a></td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div class="drawer">
+            <button class="drawer-close" onclick="toggleDrawer()">×</button>
+            <div class="drawer-header">Options</div>
+            <div class="drawer-body">
+                <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="toggleTheme()">Light Theme</button>
+            </div>
         </div>
 
-        <div class="box">
-            <h3>Monitor Complaints</h3>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                {% for complaint in complaints %}
-                <tr>
-                    <td>{{ complaint.id }}</td>
-                    <td>{{ complaint.category }}</td>
-                    <td>{{ complaint.description }}</td>
-                    <td>{{ complaint.status }}</td>
-                    <td><a href="{{ url_for('view_complaint', complaint_id=complaint.id) }}" class="action-btn">View</a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+        <h3>Complaints Overview</h3>
+        <table>
+            <tr>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Complaint Image</th>
+                <th>Date</th> <!-- New column for date -->
+                <th>Analysis</th>
+            </tr>
+            {% for complaint in complaints %}
+            <tr>
+                <td>{{ complaint.department_name }}</td>
+                <td>{{ complaint.status }}</td>
+                <td class="img-container">
+                    <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image">
+                </td>
+           <td>{{ complaint.date.strftime('%Y-%m-%d') }}</td>
+
+                <td><a href="{{ url_for('admin.analysis', dept_id=complaint.deptid) }}" class="action-btn">Analysis</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% if total_count > 3 %}
+        <button onclick="window.location.href='{{ url_for('admin.show_more_complaints') }}'">Show More</button>
+        {% endif %}
 
         <!-- Logout Button -->
-        <form action="{{ url_for('admin_logout') }}" method="POST">
+        <form action="{{ url_for('admin.admin_logout') }}" method="POST">
             <input type="button" value="Logout" onclick="this.form.submit();">
         </form>
+    </div>
+
+    <!-- Footer with Contact and Copyright Information -->
+    <div class="footer">
+        <p>Contact us at: <a href="mailto:support@example.com" style="color: #00aaff;">support@example.com</a></p>
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
     </div>
 </body>
 </html>

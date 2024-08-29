@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Report</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <h2>Progress Report for Complaint ID {{ complaint.id }}</h2>
+    <form action="{{ url_for('department.submit_progress_report', complaint_id=complaint.id) }}" method="POST" enctype="multipart/form-data">
+        <div>
+            <label for="report">Report:</label>
+            <textarea id="report" name="report" rows="4" cols="50" required></textarea>
+        </div>
+        <div>
+            <label for="photo">Upload Photo:</label>
+            <input type="file" id="photo" name="photo" accept="image/*" required>
+        </div>
+        <button type="submit">Submit Report</button>
+    </form>
+    <a href="{{ url_for('department.department_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

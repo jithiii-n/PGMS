@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #4CAF50;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .field {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Complaint Report</h1>
+    <div class="content">
+        <div class="field"><strong>Date:</strong> {{ date }}</div>
+        <div class="field"><strong>Department:</strong> {{ department }}</div>
+        <div class="field"><strong>Report Details:</strong> {{ report_details }}</div>
+        <div class="field"><strong>Additional Information:</strong> {{ additional_info }}</div>
+        <div class="field"><strong>Officer in Charge:</strong> {{ officer_name }}</div>
+        <div class="field"><strong>Reference Number:</strong> {{ reference_no }}</div>
+    </div>
+</body>
+</html>

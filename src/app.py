@@ -3,6 +3,7 @@ from config import Config
 from routes.auth import auth_bp
 from routes.user import user_bp
 from routes.admin import admin_bp
+from routes.department import department_bp
 from models.model_loader import load_classification_model  # Fixed import
 import os
 
@@ -22,10 +23,10 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp)
-
+    app.register_blueprint(department_bp)
     return app
 
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -4,81 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Department</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #121212; /* Dark theme background */
-            color: #e0e0e0; /* Light text color for dark theme */
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #1e1e1e; /* Darker background for the container */
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin: 10px 0 5px;
-        }
-
-        input {
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #333;
-            background: #1e1e1e;
-            color: #e0e0e0;
-        }
-
-        input[type="submit"] {
-            background: #00aaff; /* Bright color for button */
-            color: #fff;
-            border: none;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background: #0077cc; /* Darker shade on hover */
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h2>Add Department</h2>
-        <form action="{{ url_for('admin.add_department') }}" method="POST">
-            <label for="id">Department ID:</label>
-            <input type="text" id="id" name="id" required>
+<body class="bg-gray-900 text-gray-200 font-sans">
+    <!-- Home Button -->
+    <div class="flex justify-start p-4">
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="text-blue-500 hover:text-blue-300">
+            <i class="fas fa-home text-2xl"></i>
+        </a>
+    </div>
 
-            <label for="name">Department Name:</label>
-            <input type="text" id="name" name="name" required>
+    <div class="container mx-auto mt-4 max-w-xl bg-gray-800 rounded-lg shadow-lg p-8">
+        <h2 class="text-3xl text-center font-semibold mb-6">Add Department</h2>
+        <form action="{{ url_for('admin.add_department') }}" method="POST" class="space-y-4">
+            <!-- Form Fields Here -->
+            <div>
+                <label for="id" class="block text-sm font-medium">Department ID:</label>
+                <input type="text" id="id" name="id" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-            <label for="district">District:</label>
-            <input type="text" id="district" name="district" required>
+            <div>
+                <label for="name" class="block text-sm font-medium">Department Name:</label>
+                <input type="text" id="name" name="name" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-            <label for="role">Role:</label>
-            <input type="text" id="role" name="role" required>
+            <div>
+                <label for="district" class="block text-sm font-medium">District:</label>
+                <input type="text" id="district" name="district" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <div>
+                <label for="role" class="block text-sm font-medium">Role:</label>
+                <input type="text" id="role" name="role" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <div>
+                <label for="email" class="block text-sm font-medium">Email:</label>
+                <input type="email" id="email" name="email" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
 
-            <input type="submit" value="Add Department">
+            <div>
+                <label for="password" class="block text-sm font-medium">Password:</label>
+                <input type="password" id="password" name="password" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="officer_name" class="block text-sm font-medium">Officer Name:</label>
+                <input type="text" id="officer_name" name="officer_name" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="position" class="block text-sm font-medium">Position:</label>
+                <input type="text" id="position" name="position" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="flex justify-center">
+                <input type="submit" value="Add Department" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            </div>
         </form>
     </div>
 </body>

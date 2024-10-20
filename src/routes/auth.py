@@ -83,10 +83,24 @@ def login():
                 if login_user.get('role') == 'admin':
                     session['admin_id'] = login_user['id']  # Set session for admin
                     print(f"Session admin_id set to: {session.get('admin_id')}")  # Debugging statement
+                    # Update last_login timestamp
+                    update_login_time = '''
+                        UPDATE login
+                        SET last_login = %s
+                        WHERE username = %s
+                    '''
+                    iud(update_login_time, (datetime.now(), email))
                     return redirect(url_for('admin.admin_dashboard'))
                 elif login_user.get('role') == 'department':
-                    session['department_id'] = login_user.get('department_id')  # Set session for department
+                    session['department_id'] = login_user['id']  # Set session for department
                     print(f"Session department_id set to: {session.get('department_id')}")  # Debugging statement
+                    # Update last_login timestamp
+                    update_login_time = '''
+                        UPDATE login
+                        SET last_login = %s
+                        WHERE username = %s
+                    '''
+                    iud(update_login_time, (datetime.now(), email))
                     return redirect(url_for('department.department_dashboard'))
                 else:
                     # Regular user login
@@ -97,7 +111,14 @@ def login():
                     if user:
                         session['user_id'] = user['lid']  # Set session for regular user
                         print(f"Session user_id set to: {session.get('user_id')}")  # Debugging statement
-                        return redirect(url_for('user.dashboard'))
+                        # Update last_login timestamp
+                        update_login_time = '''
+                            UPDATE login
+                            SET last_login = %s
+                            WHERE username = %s
+                        '''
+                        iud(update_login_time, (datetime.now(), email))
+                        return redirect(url_for('user.dashboard_index'))
                     else:
                         flash('User not found in user table.')
             else:
@@ -108,6 +129,7 @@ def login():
             print(f"An error occurred: {e}")
 
     return render_template('login.html')
+
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, send_file, current_app
 from werkzeug.utils import secure_filename
 import matplotlib.pyplot as plt
@@ -18,12 +20,27 @@ def department_dashboard():
         flash('Department not logged in.')
         return redirect(url_for('auth.login'))
 
+    # Query to fetch complaints for the department
     qry_complaints = '''
         SELECT * FROM complaint WHERE deptid = %s
     '''
     complaints_list = select_all(qry_complaints, (dept_id,))
-    return render_template('dep_dashboard.html', complaints=complaints_list)
 
+    # Query to fetch today's announcements from the database
+    qry_announcements = '''
+        SELECT * FROM announcements WHERE ndate = %s ORDER BY ndate DESC
+    '''
+    todays_date = datetime.today().date()
+    todays_announcements = select_all(qry_announcements, (todays_date,))
+
+    # Count of today's announcements
+    todays_announcements_count = len(todays_announcements)
+
+    # Render the template with the announcements and count
+    return render_template('dep_dashboard.html',
+                           complaints=complaints_list,
+                           todays_announcements=todays_announcements,
+                           todays_announcements_count=todays_announcements_count)
 
 @department_bp.route('/view_complaint/<int:complaint_id>')
 @department_required

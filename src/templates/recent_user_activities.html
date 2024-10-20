@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent User Activities</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for table and buttons */
+        .table-header {
+            background-color: #f4f4f4;
+        }
+        .action-btn {
+            @apply text-blue-500 border border-blue-500 rounded px-3 py-1 text-sm;
+        }
+        .action-btn:hover {
+            @apply bg-blue-500 text-white;
+        }
+    </style>
+
+    <!-- JavaScript for confirmation warning -->
+    <script>
+        function confirmRemoval(event) {
+            event.preventDefault(); // Prevent form submission until confirmation
+            const confirmed = confirm("Are you sure you want to remove this user? This action cannot be undone.");
+            if (confirmed) {
+                event.target.submit(); // If confirmed, proceed with form submission
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="text-blue-500 hover:underline mb-4 block">Back to Dashboard</a>
+        <h3 class="text-xl font-semibold text-gray-800 border-b-2 border-blue-500 pb-2 mb-6">Recent User Activities</h3>
+
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="table-header">
+                    <th class="py-2 px-4 border-b text-left">Full Name</th>
+                    <th class="py-2 px-4 border-b text-left">Email</th>
+                    <th class="py-2 px-4 border-b text-left">Phone</th>
+                    <th class="py-2 px-4 border-b text-left">State</th>
+                    <th class="py-2 px-4 border-b text-left">Complaints Filed</th>
+                    <th class="py-2 px-4 border-b text-left">Complaints Resolved</th>
+                    <th class="py-2 px-4 border-b text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr class="hover:bg-gray-200">
+                    <td class="py-2 px-4 border-b">{{ user.full_name }}</td>
+                    <td class="py-2 px-4 border-b">{{ user.email }}</td>
+                    <td class="py-2 px-4 border-b">{{ user.phone }}</td>
+                    <td class="py-2 px-4 border-b">{{ user.state }}</td>
+                    <td class="py-2 px-4 border-b">{{ user.complaints_filed }}</td>
+                    <td class="py-2 px-4 border-b">{{ user.complaints_resolved }}</td>
+                    <td class="py-2 px-4 border-b">
+                        <form action="{{ url_for('admin.remove_user', user_id=user.user_id) }}" method="post" onsubmit="confirmRemoval(event)">
+                            <button type="submit" class="action-btn">Remove User</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

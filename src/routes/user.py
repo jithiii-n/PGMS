@@ -1,12 +1,15 @@
+import string
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session, send_file, current_app
+
 from werkzeug.utils import secure_filename
 import os
-from io import BytesIO
-from weasyprint import HTML
+
 from utils.db import iud, select_all, selectone
 from datetime import datetime
 from PIL import Image
 import numpy as np
+
 
 user_bp = Blueprint('user', __name__)
 
@@ -40,6 +43,8 @@ def dashboard():
 
     return render_template('dashboard.html', complaints=complaints_list)
 
+
+
 @user_bp.route('/complaints')
 def complaints():
     # Ensure user is logged in
@@ -48,6 +53,7 @@ def complaints():
         return redirect(url_for('auth.login'))
 
     return render_template('complaints.html')
+
 
 @user_bp.route('/submit_complaint', methods=['POST'])
 def submit_complaint():
@@ -66,18 +72,25 @@ def submit_complaint():
             raise ValueError("User ID does not exist in the user table.")
 
         # Get form data
-        location = request.form.get('location')
         description = request.form.get('description')
         image = request.files.get('image')
+        taluk = request.form.get('taluk')
+        latitude = request.form.get('latitude')  # Get latitude from the form
+        longitude = request.form.get('longitude')  # Get longitude from the form
 
-        if not location or not description:
-            raise ValueError("Location and description are required.")
+        if not description:
+            raise ValueError("Description is required.")
+
+        # Ensure latitude and longitude are present
+        if not latitude or not longitude:
+            raise ValueError("Latitude and longitude must be provided.")
 
         # Ensure the uploads directory exists
         uploads_dir = os.path.join(current_app.root_path, 'static', 'uploads')
         if not os.path.exists(uploads_dir):
             os.makedirs(uploads_dir)
 
+        # Create the image filename
         image_filename = None
         classification = None
 
@@ -96,16 +109,17 @@ def submit_complaint():
             img_array = np.expand_dims(img_array, axis=0)
 
             predictions = model.predict(img_array)
-            class_labels = ['normal', 'potholes', 'waste']
+            class_labels = ['flood', 'post', 'potholes', 'waste']
             classification = class_labels[np.argmax(predictions)]
 
             print(f"Image classified as: {classification}")
 
         # Map classification to deptid
         classification_to_deptid = {
-            'normal': 0,  # Ensure this ID exists in your departments table
-            'potholes': 1,  # Ensure this ID exists in your departments table
-            'waste': 2  # Or 2, depending on your classification needs
+            'flood': 4,
+            'potholes': 1,
+            'post': 3,
+            'waste': 2
         }
 
         deptid = classification_to_deptid.get(classification, None)
@@ -114,6 +128,9 @@ def submit_complaint():
 
         # Get the current date
         current_date = datetime.now().strftime('%Y-%m-%d')
+
+        # Combine latitude and longitude into a single string
+        location = f"{latitude},{longitude}"
 
         # Insert the complaint into the database
         qry = '''
@@ -130,7 +147,6 @@ def submit_complaint():
     return redirect(url_for('user.dashboard'))
 
 
-
 @user_bp.route('/download_pdf/<int:complaint_id>')
 def download_pdf(complaint_id):
     pdf_filename = f'report_{complaint_id}.pdf'
@@ -140,3 +156,84 @@ def download_pdf(complaint_id):
     else:
         flash('Report not found.')
         return redirect(url_for('user.dashboard'))
+
+    # noinspection PyUnreachableCode
+  # Adjust the import as necessary
+
+
+
+@user_bp.route('/dashboard_index', methods=['GET'])
+def dashboard_index():
+    if 'user_id' not in session:
+        flash('Please log in to view your complaints.')
+        return redirect(url_for('auth.login'))
+
+    selected_date = datetime.now().date()  # Default to today's date
+
+    # Fetch complaints for the user on the selected date
+    qry = '''
+        SELECT * FROM complaint WHERE lid = %s AND DATE(date_column) = %s
+    '''
+    complaints_list = select_all(qry, (session['user_id'], selected_date))
+
+    complaints_list = select_all(qry, (session['user_id'], selected_date))
+
+    # Check if any complaints were found
+    if not complaints_list:
+        flash('No complaints found for today.')
+
+    return render_template('dashboard_index.html', complaints=complaints_list, selected_date=selected_date)
+
+@user_bp.route('/view_complaints/<string:selected_date>', methods=['GET'])
+def view_complaints(selected_date):
+    if 'user_id' not in session:
+        flash('Please log in to view your complaints.')
+        return redirect(url_for('auth.login'))
+
+    # Parse the date string
+    try:
+        selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+    except ValueError:
+        flash('Invalid date format.')
+        return redirect(url_for('user_bp.dashboard_index'))
+
+    # Fetch complaints for the user on the selected date
+    qry = '''
+        SELECT * FROM complaint WHERE lid = %s AND DATE(date) = %s
+    '''
+    complaints_list = select_all(qry, (session['user_id'], selected_date))
+
+    # Check if any complaints were found
+    if not complaints_list:
+        flash('No complaints found for the selected date.')
+
+    return render_template('dashboard_index.html', complaints=complaints_list, selected_date=selected_date)
+@user_bp.route('/deactivate_account', methods=['POST'])
+def deactivate_account():
+    try:
+        # Get the user ID from the session
+        user_id = session.get('user_id')
+        if not user_id:
+            flash('User ID not found in session.')
+            return redirect(url_for('user.dashboard'))
+
+        # Query to delete the user based on the user ID
+        delete_user_query = '''
+            DELETE FROM user WHERE lid = %s
+        '''
+        delete_result = iud(delete_user_query, (user_id,))
+
+        # Check if the user was successfully deleted
+        if delete_result:
+            # Clear the session after user removal
+            session.clear()
+            flash('Your account has been deactivated successfully.')
+        else:
+            flash('Failed to deactivate account.')
+
+    except Exception as e:
+        flash(f"An error occurred: {e}")
+        print(f"An error occurred: {e}")
+
+    # Redirect the user to the homepage or login page
+    return redirect(url_for('auth.login'))

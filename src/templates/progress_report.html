@@ -6,20 +6,52 @@
     <title>Progress Report</title>
     <style>
         /* Add your styles here */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <h2>Progress Report for Complaint ID {{ complaint.id }}</h2>
     <form action="{{ url_for('department.submit_progress_report', complaint_id=complaint.id) }}" method="POST" enctype="multipart/form-data">
-        <div>
-            <label for="report">Report:</label>
-            <textarea id="report" name="report" rows="4" cols="50" required></textarea>
-        </div>
-        <div>
-            <label for="photo">Upload Photo:</label>
-            <input type="file" id="photo" name="photo" accept="image/*" required>
-        </div>
-        <button type="submit">Submit Report</button>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Details</th>
+            </tr>
+            <tr>
+                <td><label for="report">Report:</label></td>
+                <td>
+                    <textarea id="report" name="report" rows="4" cols="50" required></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="photo">Upload Photo:</label></td>
+                <td>
+                    <input type="file" id="photo" name="photo" accept="image/*" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <button type="submit">Submit Report</button>
+                </td>
+            </tr>
+        </table>
     </form>
     <a href="{{ url_for('department.department_dashboard') }}">Back to Dashboard</a>
 </body>

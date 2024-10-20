@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace Officer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="container mx-auto p-6 bg-gray-800 rounded-lg shadow-lg mt-6">
+        <h2 class="text-2xl font-extrabold text-center mb-6">Replace Officer for Department {{ dept_id }}</h2>
+        <form action="{{ url_for('admin.replace_officer', dept_id=dept_id) }}" method="POST">
+            <div class="mb-4">
+                <label for="officer_name" class="block text-lg font-medium text-gray-100">New Officer Name</label>
+                <input type="text" id="officer_name" name="officer_name" class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-100" required>
+            </div>
+            <div class="mt-6 text-center">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Update Officer</button>
+            </div>
+        </form>
+        <div class="mt-6 text-center">
+          <a href="{{ url_for('admin.department_details', dept_id=dept_id) }}" class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">Back to Department Details</a>
+
+        </div>
+    </div>
+</body>
+</html>

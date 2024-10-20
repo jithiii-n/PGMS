@@ -4,143 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
+        /* Custom styles for light theme switch */
+        .drawer {
+            background: #1e1e1e; /* Dark background for drawer */
+            border-left: 1px solid #333;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
         }
 
-        h2 {
-            text-align: center;
-            color: #e0e0e0;
+        .drawer.open {
+            transform: translateX(0);
         }
 
-        .nav-bar {
-            text-align: right;
-            margin-bottom: 20px;
+        .drawer-close:hover {
+            color: #00aaff;
         }
 
-        .nav-bar a, .nav-bar button {
-            background-color: #333;
-            color: #e0e0e0;
-            padding: 8px 12px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-            border: none;
+        /* Top panel - smaller, refined icons */
+        .top-panel a svg {
+            width: 24px;
+            height: 24px;
         }
 
-        .nav-bar a.logout-btn {
-            background-color: #e53935;
+        /* Button styling */
+        button, a.button {
+            transition: all 0.3s ease-in-out;
         }
 
-        .nav-bar a.logout-btn:hover {
-            background-color: #d32f2f;
+        button:hover, a.button:hover {
+            background-color: #007bff;
+            color: white;
         }
 
+        /* Refined table styles */
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0 0.5rem;
         }
 
-        table, th, td {
-            border: 1px solid #333;
+        table thead th {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 1rem;
         }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
+        table tbody tr:hover {
+            background-color: #2d2d2d;
         }
 
-        th {
-            background-color: #444;
-            color: #e0e0e0;
+        /* Smaller icons */
+        .icon {
+            width: 20px;
+            height: 20px;
         }
 
-        tr:nth-child(even) {
-            background-color: #1e1e1e;
-        }
-
-        tr:hover {
-            background-color: #333;
-        }
-
-        .action-btn, .file-complaint-btn {
-            background-color: #555;
-            color: #e0e0e0;
-            padding: 8px 12px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
-        }
-
-        .file-complaint-btn {
-            margin: 20px auto;
-            display: block;
-            width: fit-content;
-        }
-
-        .action-btn:hover, .file-complaint-btn:hover {
-            background-color: #777;
+        /* Footer links refinement */
+        footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
     </style>
-</head>
-<body>
-    <div class="nav-bar">
-        <!-- Login button -->
+    <script>
+        function toggleDrawer() {
+            document.querySelector('.drawer').classList.toggle('open');
+        }
 
-        <!-- Logout button -->
-        <form action="{{ url_for('auth.logout') }}" method="post" style="display: inline;">
-            <button type="submit" class="logout-btn">Logout</button>
+        function toggleTheme() {
+            const body = document.body;
+            const isLight = body.classList.toggle('light-theme');
+
+            const themeText = isLight ? 'Dark Theme' : 'Light Theme';
+            document.getElementById('theme-toggle-btn').textContent = themeText;
+        }
+
+        window.onload = function() {
+            const body = document.body;
+            const isLight = body.classList.contains('light-theme');
+            const themeText = isLight ? 'Dark Theme' : 'Light Theme';
+            document.getElementById('theme-toggle-btn').textContent = themeText;
+        };
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-100 flex flex-col min-h-screen">
+
+    <!-- Top Panel -->
+    <div class="top-panel bg-gray-800 text-gray-100 flex justify-between items-center p-3 shadow-md">
+        <a href="{{ url_for('user.dashboard_index') }}" class="flex items-center text-white hover:text-blue-400">
+            <svg class="w-6 h-6 mr-2 icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l2-2m-2 2h16M5 12h14m-7-5v14m-2-14v14"></path>
+            </svg>
+            Home
+        </a>
+        <form action="{{ url_for('auth.logout') }}" method="post" class="inline">
+            <button type="submit" class="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700">Logout</button>
         </form>
     </div>
 
-    <h2>Your Complaints</h2>
+    <!-- Main Content -->
+    <div class="container mx-auto p-6 bg-gray-800 rounded-lg shadow-lg mt-6 flex-1">
+        <h2 class="text-2xl font-extrabold text-center mb-4">Your Complaints</h2>
+        <a href="{{ url_for('user.complaints') }}" class="bg-blue-500 text-white py-2 px-4 rounded block text-center hover:bg-blue-600 transition-colors">File a Complaint</a>
 
-    <!-- Button to go to the complaint filing page -->
-    <a href="{{ url_for('user.complaints') }}" class="file-complaint-btn">File a Complaint</a>
+        <table class="w-full mt-6 bg-gray-700 text-gray-200 rounded-lg">
+            <thead>
+                <tr>
+                    <th class="p-4">ID</th>
+                    <th class="p-4">Location</th>
+                    <th class="p-4">Description</th>
+                    <th class="p-4">Image</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4">Classification</th>
+                    <th class="p-4">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr class="hover:bg-gray-600 transition-colors">
+                    <td class="p-4">{{ complaint.id }}</td>
+                    <td class="p-4">{{ complaint.location }}</td>
+                    <td class="p-4">{{ complaint.description }}</td>
+                    <td class="p-4">
+                        {% if complaint.image_filename %}
+                        <div class="w-20 h-20 overflow-hidden rounded-lg">
+                            <img src="{{ url_for('static', filename='uploads/' ~ complaint.image_filename) }}" alt="Complaint Image" class="w-full h-auto object-cover">
+                        </div>
+                        {% else %}
+                        No Image
+                        {% endif %}
+                    </td>
+                    <td class="p-4">{{ complaint.status }}</td>
+                    <td class="p-4">{{ complaint.classification }}</td>
+                    <td class="p-4">
+                        {% if complaint.status == 'Resolved' %}
+                        <a href="{{ url_for('user.download_pdf', complaint_id=complaint.id) }}" class="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors button">Download Report</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Status</th>
-            <th>Classification</th>
-            <th>Action</th>
-        </tr>
-        {% for complaint in complaints %}
-        <tr>
-            <td>{{ complaint.id }}</td>
-            <td>{{ complaint.location }}</td>
-            <td>{{ complaint.description }}</td>
-            <td>
-                {% if complaint.image_filename %}
-                <img src="{{ url_for('static', filename='uploads/' ~ complaint.image_filename) }}" alt="Complaint Image" style="max-width: 100px; max-height: 100px;">
-                {% else %}
-                No Image
-                {% endif %}
-            </td>
-            <td>{{ complaint.status }}</td>
-            <td>{{ complaint.classification }}</td>
-            <td>
-                {% if complaint.status == 'Resolved' %}
-                <a href="{{ url_for('user.download_pdf', complaint_id=complaint.id) }}" class="action-btn">Download Report</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <!-- Drawer Menu -->
+    <div class="drawer fixed top-0 right-0 h-full w-64 bg-gray-800 text-gray-100 shadow-lg transform translate-x-full transition-transform">
+        <div class="drawer-header flex justify-between items-center p-4 border-b border-gray-700">
+            <span class="text-lg font-semibold">Menu</span>
+            <button class="drawer-close text-2xl" onclick="toggleDrawer()">✖</button>
+        </div>
+        <div class="drawer-body p-4">
+            <button id="theme-toggle-btn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 w-full mb-4" onclick="toggleTheme()">Light Theme</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 text-center p-4 mt-6">
+        <p>Contact us at: <a href="" class="text-blue-400 hover:underline">info@company.com</a></p>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </footer>
 </body>
 </html>

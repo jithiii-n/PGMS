@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Department</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans">
+    <!-- Home Button -->
+    <div class="flex justify-start p-4">
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="text-blue-500 hover:text-blue-300">
+            <i class="fas fa-home text-2xl"></i>
+        </a>
+    </div>
+
+    <div class="container mx-auto mt-4 max-w-xl bg-gray-800 rounded-lg shadow-lg p-8">
+        <h2 class="text-3xl text-center font-semibold mb-6">Add Department</h2>
+        <form action="{{ url_for('admin.add_department') }}" method="POST" class="space-y-4">
+            <!-- Form Fields Here -->
+            <div>
+                <label for="id" class="block text-sm font-medium">Department ID:</label>
+                <input type="text" id="id" name="id" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="name" class="block text-sm font-medium">Department Name:</label>
+                <input type="text" id="name" name="name" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="district" class="block text-sm font-medium">District:</label>
+                <input type="text" id="district" name="district" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="role" class="block text-sm font-medium">Role:</label>
+                <input type="text" id="role" name="role" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium">Email:</label>
+                <input type="email" id="email" name="email" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium">Password:</label>
+                <input type="password" id="password" name="password" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="officer_name" class="block text-sm font-medium">Officer Name:</label>
+                <input type="text" id="officer_name" name="officer_name" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="position" class="block text-sm font-medium">Position:</label>
+                <input type="text" id="position" name="position" class="w-full mt-1 p-2 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="flex justify-center">
+                <input type="submit" value="Add Department" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('/static/webapp.jpg'); /* Adjusted path to static directory */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .bg-semi-transparent {
+            background: rgba(31, 41, 55, 0.85); /* Semi-transparent dark gray */
+        }
+        .form-container {
+            max-width: 20rem; /* Reduced max-width to 20rem (320px) */
+            padding: 0.5rem;   /* Further reduced padding */
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen">
+    <div class="form-container w-full"> <!-- Removed max-width class and set full width -->
+        <div
+            class="bg-semi-transparent rounded-lg shadow-xl overflow-hidden"
+            style="box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);"
+        >
+            <div class="p-4"> <!-- Reduced padding -->
+                <h2 class="text-center text-xl font-bold text-white"> <!-- Smaller font size -->
+                    Register
+                </h2>
+                <p class="mt-2 text-center text-gray-400 text-sm">Create an account</p>
+
+                <!-- Display Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="mb-4">
+                            {% for category, message in messages %}
+                                <div class="text-sm font-medium text-{{ category == 'error' and 'red' or 'green' }}-400 bg-gray-800 border border-{{ category == 'error' and 'red' or 'green' }}-400 rounded-md p-2">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form id="registrationForm" action="{{ url_for('auth.register') }}" method="post" class="mt-4 space-y-3"> <!-- Reduced margin-top and spacing -->
+                    <div class="rounded-md shadow-sm">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300" for="fname">First Name</label>
+                            <input
+                                id="fname"
+                                name="fname"
+                                type="text"
+                                required
+                                placeholder="First Name"
+                                class="appearance-none relative block w-full px-2 py-1 border border-gray-700 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-sm font-medium text-gray-300" for="lname">Last Name</label>
+                            <input
+                                id="lname"
+                                name="lname"
+                                type="text"
+                                required
+                                placeholder="Last Name"
+                                class="appearance-none relative block w-full px-2 py-1 border border-gray-700 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-sm font-medium text-gray-300" for="email">Email</label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                required
+                                placeholder="Email"
+                                class="appearance-none relative block w-full px-2 py-1 border border-gray-700 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-sm font-medium text-gray-300" for="password">Password</label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                placeholder="Password"
+                                minlength="8"
+                                class="appearance-none relative block w-full px-2 py-1 border border-gray-700 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-sm font-medium text-gray-300" for="phone">Phone</label>
+                            <input
+                                id="phone"
+                                name="phone"
+                                type="text"
+                                placeholder="+91XXXXXXXXXX"
+                                required
+                                pattern="^\+91\d{10}$"
+                                class="appearance-none relative block w-full px-2 py-1 border border-gray-700 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                        <div class="mt-2">
+                            <label class="block text-sm font-medium text-gray-300" for="state">State</label>
+                            <input
+                                id="state"
+                                name="state"
+                                type="text"
+                                placeholder="State"
+                                required
+                                class="appearance-none relative block w-full px-2 py-1 border border-gray-700 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button
+                            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            type="submit"
+                        >
+                            Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="px-4 py-3 bg-gray-700 text-center">
+                <span class="text-gray-400 text-sm">Already registered?</span>
+                <a class="font-medium text-indigo-500 hover:text-indigo-400" href="{{ url_for('auth.login') }}">
+                    Sign in
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Validation -->
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            var fname = document.getElementById('fname').value.trim();
+            var lname = document.getElementById('lname').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var password = document.getElementById('password').value.trim();
+            var phone = document.getElementById('phone').value.trim();
+            var state = document.getElementById('state').value.trim();
+
+            // Regular expression to allow only alphabetic characters and spaces
+            var namePattern = /^[a-zA-Z\s]+$/;
+
+            // First Name Validation (only letters, no numbers or special characters)
+            if (!namePattern.test(fname)) {
+                alert('First Name must contain only letters and spaces. No numbers or special characters allowed.');
+                event.preventDefault();
+                return;
+            }
+
+            // Last Name Validation (only letters, no numbers or special characters)
+            if (!namePattern.test(lname)) {
+                alert('Last Name must contain only letters and spaces. No numbers or special characters allowed.');
+                event.preventDefault();
+                return;
+            }
+
+            // Email Validation
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                alert('Please enter a valid email address.');
+                event.preventDefault();
+                return;
+            }
+
+            // Password Length Validation
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long.');
+                event.preventDefault();
+                return;
+            }
+
+            // Phone Number Validation (+91XXXXXXXXXX)
+            var phonePattern = /^\+91\d{10}$/;
+            if (!phonePattern.test(phone)) {
+                alert('Please enter a valid phone number in the format +91XXXXXXXXXX.');
+                event.preventDefault();
+                return;
+            }
+
+            // State Validation
+            if (state === '') {
+                alert('Please enter a valid state.');
+                event.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+</html>

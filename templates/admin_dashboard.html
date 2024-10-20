@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- TailwindCSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        /* Custom styles for light theme switch */
+        body {
+            background: url('{{ url_for("static", filename="webapp.jpg") }}?v=1') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff; /* Default text color for better contrast on the image */
+        }
+
+        .drawer {
+            background: #003d7d; /* Dark blue background for drawer */
+            border-left: 1px solid #002f5d; /* Darker blue border for drawer */
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-close:hover {
+            color: #66aaff; /* Light blue for hover */
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #003d7d; /* Dark blue */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #ffffff;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #002f5d;
+        }
+
+        /* Semi-transparent background for Complaints Overview block */
+        .complaints-overview {
+            background-color: rgba(255, 255, 255, 0.8); /* White background with 80% opacity */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Updated styles for top panel */
+        .top-panel {
+            background-color: #1e3a5f; /* Muted blue color */
+            font-size: 0.875rem; /* Smaller font size */
+            padding: 0.5rem 1rem; /* Smaller padding for a more compact look */
+            height: 50px; /* Reduced height */
+        }
+
+        .top-panel a {
+            color: #d1d5db; /* Light gray text for a more elegant look */
+        }
+
+        .top-panel a:hover {
+            color: #a0aec0; /* Slightly darker gray for hover effect */
+        }
+
+        .drawer-toggle-btn {
+            font-size: 1rem; /* Slightly larger for visibility */
+        }
+
+    </style>
+
+    <script>
+        function toggleDrawer() {
+            document.querySelector('.drawer').classList.toggle('open');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const isLight = body.classList.toggle('light-theme');
+
+            // Update button text based on current theme
+            const themeText = isLight ? 'Dark Theme' : 'Light Theme';
+            document.getElementById('theme-toggle-btn').textContent = themeText;
+        }
+
+        // Ensure the button reflects the current theme on page load
+        window.onload = function() {
+            const body = document.body;
+            const isLight = body.classList.contains('light-theme');
+            const themeText = isLight ? 'Dark Theme' : 'Light Theme';
+            document.getElementById('theme-toggle-btn').textContent = themeText;
+        };
+    </script>
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Top Panel with Departments and Users -->
+    <div class="top-panel flex justify-between items-center shadow-md">
+        <div class="dropdown relative inline-block">
+            <a href="#" class="font-semibold hover:text-blue-300">Departments</a>
+            <div class="dropdown-content absolute bg-blue-600 text-white shadow-lg mt-2 rounded-md">
+                <a href="{{ url_for('admin.department_details', dept_id=1) }}" class="block px-4 py-2 hover:bg-blue-500">PWD</a>
+                <a href="{{ url_for('admin.department_details', dept_id=2) }}" class="block px-4 py-2 hover:bg-blue-500">CORPORATION</a>
+                <a href="{{ url_for('admin.department_details', dept_id=3) }}" class="block px-4 py-2 hover:bg-blue-500">KSEB</a>
+            </div>
+        </div>
+
+        <a href="{{ url_for('admin.recent_user_activities') }}" class="font-semibold hover:text-blue-300">Users</a>
+        <a href="{{ url_for('admin.recent_user_activities') }}" class="font-semibold hover:text-blue-300">Settings</a>
+        <a href="{{ url_for('admin.make_announcement') }}" class="font-semibold hover:text-blue-300">Announcements</a>
+
+
+        <button class="drawer-toggle-btn bg-blue-700 text-white p-2 rounded" onclick="toggleDrawer()">☰</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6 mt-6 flex-1">
+        <div class="complaints-overview">
+            <h2 class="text-2xl font-extrabold text-center text-blue-700">PGMS-KOTTAYAM</h2>
+            <h3 class="text-xl text-center mt-4 text-blue-600">Complaints Overview</h3>
+            <table class="w-full mt-6 bg-gray-100 text-gray-900 border-collapse rounded-lg overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="p-4 border-b border-gray-300">Department</th>
+                        <th class="p-4 border-b border-gray-300">Status</th>
+                        <th class="p-4 border-b border-gray-300">Complaint Image</th>
+                        <th class="p-4 border-b border-gray-300">Date</th>
+                        <th class="p-4 border-b border-gray-300">Analysis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td class="p-4 border-b border-gray-300">{{ complaint.department_name }}</td>
+                        <td class="p-4 border-b border-gray-300">{{ complaint.status }}</td>
+                        <td class="p-4 border-b border-gray-300">
+                            <div class="w-24 h-24 overflow-hidden">
+                                <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image" class="w-full h-auto">
+                            </div>
+                        </td>
+                        <td class="p-4 border-b border-gray-300">{{ complaint.date.strftime('%Y-%m-%d') }}</td>
+                        <td class="p-4 border-b border-gray-300">
+                            <a href="{{ url_for('admin.analysis', dept_id=complaint.deptid) }}" class="text-blue-500 hover:underline">Analyze</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="mt-6 text-center">
+                <a href="{{ url_for('admin.show_more_complaints') }}" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Show More</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawer Menu -->
+    <div class="drawer fixed top-0 right-0 h-full w-64 bg-blue-600 text-white shadow-lg transform translate-x-full transition-transform">
+        <div class="drawer-header flex justify-between items-center p-4 border-b border-blue-500">
+            <span class="text-lg font-semibold">Menu</span>
+            <button class="drawer-close text-white" onclick="toggleDrawer()">✕</button>
+        </div>
+        <div class="drawer-body p-4">
+            <ul class="space-y-4">
+                <li><a href="{{ url_for('admin.add_department') }}" class="hover:text-blue-300">View Departments</a></li>
+                <li><a href="{{ url_for('admin.add_department') }}" class="hover:text-blue-300">Add Department</a></li>
+                <li><button id="theme-toggle-btn" class="hover:text-blue-300" onclick="toggleTheme()">Light Theme</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white py-4 mt-auto text-center">
+        <p>&copy; 2024 PGMS Kottayam. All Rights Reserved.</p>
+        <p>Contact: admin@pgmskottayam.in</p>
+    </footer>
+</body>
+</html>

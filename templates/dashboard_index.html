@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        /* Your existing styles here */
+        .slideshow-container {
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+        }
+        .slide {
+            display: none;
+            width: 100%;
+        }
+        .active {
+            display: block;
+        }
+        .calendar-container {
+            width: 20%;
+            min-width: 200px;
+            margin: auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #date-picker {
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #cbd5e0;
+            border-radius: 0.375rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Top Panel -->
+    <div class="bg-blue-700 text-white p-4 flex justify-between items-center shadow-md">
+        <a href="{{ url_for('user.dashboard') }}" class="text-lg font-semibold hover:text-blue-300">My Complaints</a>
+        <a href="#" class="text-lg font-semibold hover:text-blue-300">Settings</a>
+
+        <!-- Account Dropdown -->
+        <div class="relative">
+            <button class="text-lg font-semibold hover:text-blue-300 focus:outline-none" id="account-btn">
+                Account
+            </button>
+            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden" id="account-menu">
+                <li>
+                    <a href="#" onclick="confirmDeactivation()" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Deactivate Account</a>
+                </li>
+                <li>
+                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Reports</a>
+                </li>
+            </div>
+        </div>
+
+        <form action="{{ url_for('auth.logout') }}" method="post" class="inline">
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Logout</button>
+        </form>
+    </div>
+
+    <!-- Hidden Form for Deactivation -->
+    <form id="deactivateForm" action="{{ url_for('user.deactivate_account') }}" method="POST" style="display:none;"></form>
+
+    <!-- Introduction Section -->
+    <div class="container mx-auto p-6 mt-6 bg-white rounded-lg shadow">
+        <h2 class="text-2xl font-semibold mb-4">Welcome to the Grievance Management System</h2>
+        <p class="text-gray-700 leading-relaxed">
+            The <strong>Grievance Management System</strong> offers a streamlined solution for citizens to report, track, and resolve public complaints. Our platform is designed to ensure that complaints reach the relevant authorities efficiently, enabling quick resolution and enhanced public service. The system helps maintain transparency and accountability by providing real-time updates on complaint statuses.
+        </p>
+        <ul class="list-disc list-inside mt-4 text-gray-700">
+            <li><strong>Easy Complaint Submission:</strong> File complaints effortlessly by uploading images and providing relevant details.</li>
+            <li><strong>Real-time Status Updates:</strong> Track the progress of your complaints from submission to resolution.</li>
+            <li><strong>Slideshow Overview:</strong> Visualize your recent complaints with a slideshow of images and associated details.</li>
+            <li><strong>Date-based Search:</strong> Use the calendar widget to view complaints submitted on specific dates.</li>
+        </ul>
+    </div>
+
+    <!-- Main Body -->
+    <div class="container mx-auto p-6 mt-6">
+        <div class="slideshow-container">
+            <!-- Slideshow Images -->
+            {% for complaint in complaints %}
+            <div class="slide">
+                <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image" class="w-full h-80 object-cover rounded-lg">
+                <div class="text-center bg-gray-800 bg-opacity-70 text-white p-4 absolute bottom-0 w-full">
+                    <h3 class="text-xl font-semibold">{{ complaint.department_name }}</h3>
+                    <p>{{ complaint.date.strftime('%Y-%m-%d') }}</p>
+                </div>
+                <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+                <a class="next" onclick="changeSlide(1)">&#10095;</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Calendar Widget -->
+        <div class="calendar-container mt-6">
+            <h2 class="text-xl font-semibold mb-2">Select a Date</h2>
+            <div class="relative">
+                <input type="text" id="date-picker" class="border p-2 rounded text-sm w-full" placeholder="Pick a date">
+            </div>
+        </div>
+
+        <!-- Complaints for Selected Date (Display in Table) -->
+        <div class="mt-6">
+            <h2 class="text-xl font-semibold mb-4">Complaints on {{ selected_date }}</h2>
+            {% if complaints %}
+                <table class="table-auto w-full bg-white shadow-md rounded-lg">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 border">Date</th>
+                            <th class="px-4 py-2 border">Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for complaint in complaints %}
+                        <tr>
+                            <td class="px-4 py-2 border">{{ complaint.date.strftime('%Y-%m-%d') }}</td>
+                            <td class="px-4 py-2 border">
+                                <img src="{{ url_for('static', filename='uploads/' + complaint.image_filename) }}" alt="Complaint Image" class="h-20 object-cover rounded">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No complaints found for this date.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer mt-6 text-center p-4 bg-gray-800 text-white">
+        <p>&copy; 2024 PGMS. All rights reserved. | <a href="#" class="text-blue-400 hover:underline">Contact Us</a></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.style.display = (i === index) ? 'block' : 'none';
+            });
+        }
+
+        function changeSlide(n) {
+            currentIndex = (currentIndex + n + slides.length) % slides.length;
+            showSlide(currentIndex);
+        }
+
+        // Show the first slide initially
+        showSlide(currentIndex);
+
+        // Initialize Flatpickr
+        flatpickr("#date-picker", {
+            dateFormat: "Y-m-d",
+            onChange: (selectedDates) => {
+                const selectedDate = selectedDates[0].toISOString().split('T')[0];
+                window.location.href = `/view_complaints/${selectedDate}`;
+            }
+        });
+
+        function confirmDeactivation() {
+            if (confirm("Are you sure you want to deactivate your account? This action cannot be undone.")) {
+                document.getElementById('deactivateForm').submit();
+            }
+        }
+
+        // Account dropdown functionality
+        const accountBtn = document.getElementById('account-btn');
+        const accountMenu = document.getElementById('account-menu');
+
+        accountBtn.addEventListener('click', () => {
+            accountMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicked outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('#account-btn')) {
+                if (!accountMenu.classList.contains('hidden')) {
+                    accountMenu.classList.add('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+        #map {
+            height: 300px; /* Set height for the map */
+            margin-bottom: 1rem; /* Space between map and form elements */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-200">
+    <form action="{{ url_for('user.submit_complaint') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Submit Complaint</h2>
+
+        <!-- Map Container -->
+        <div id="map"></div>
+
+        <!-- Latitude and Longitude Inputs (Hidden) -->
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+
+        <!-- Taluk Dropdown -->
+        <label for="taluk" class="block text-gray-700 font-semibold mb-2">Taluk:</label>
+        <select id="taluk" name="taluk" required class="w-full p-2 border border-gray-300 rounded-md mb-4">
+            <option value="kottayam">Kottayam</option>
+            <option value="changanacherry">Changanacherry</option>
+            <option value="vaikom">Vaikom</option>
+            <option value="kanjirapally">Kanjirapally</option>
+            <option value="meenachil">Meenachil</option>
+        </select>
+
+        <!-- Image Upload -->
+        <label for="image" class="block text-gray-700 font-semibold mb-2">Upload Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required class="w-full p-2 border border-gray-300 rounded-md mb-4">
+
+        <!-- Description Textarea -->
+        <label for="description" class="block text-gray-700 font-semibold mb-2">Description:</label>
+        <textarea id="description" name="description" rows="4" required class="w-full p-2 border border-gray-300 rounded-md mb-6"></textarea>
+
+        <!-- Submit Button -->
+        <input type="submit" value="Submit" class="w-full bg-green-500 text-white p-3 rounded-md cursor-pointer hover:bg-green-600 transition duration-300">
+    </form>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([9.5916, 76.5220], 13); // Center the map at Kottayam, India
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Add a marker to the map
+        var marker = L.marker([9.5916, 76.5220]).addTo(map);
+        marker.bindPopup("<b>Select this location</b>").openPopup();
+
+        // Update latitude and longitude inputs when the marker is moved
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+            marker.setLatLng(e.latlng);
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+        });
+
+        // Set initial latitude and longitude inputs
+        document.getElementById('latitude').value = marker.getLatLng().lat;
+        document.getElementById('longitude').value = marker.getLatLng().lng;
+    </script>
+</body>
+</html>

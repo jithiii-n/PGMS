@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Reports</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1e1e1e; /* Dark background for body */
+            color: #f0f0f0; /* Light text color */
+        }
+        .container {
+            background-color: #2d2d2d; /* Slightly lighter dark background for the container */
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        a {
+            color: #1e90ff; /* Bright link color */
+        }
+        a:hover {
+            color: #63b3ed; /* Hover color for links */
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Top Panel with Navigation -->
+    <div class="bg-gray-800 text-gray-100 flex justify-between items-center p-4 shadow-md">
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="text-lg font-semibold hover:text-blue-400">Back to Dashboard</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-6 mt-6 flex-1">
+        <h1 class="text-2xl font-extrabold text-center mb-4">Generated Reports</h1>
+        <ul class="list-disc pl-5">
+            {% for report in reports %}
+                <li class="mb-2">
+                    <a href="{{ url_for('static', filename='reports/' + report) }}" target="_blank" class="hover:underline">{{ report }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 text-center p-4 mt-6">
+        <p>Contact us at: <a href="mailto:keralaITsupport@gov.in" class="text-blue-400 hover:underline">support@example.com</a></p>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </footer>
+</body>
+</html>

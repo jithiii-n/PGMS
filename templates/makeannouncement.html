@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Announcement</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url('{{ url_for("static", filename="webapp.jpg") }}?v=1') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff; /* Default text color for better contrast on the image */
+        }
+
+        .top-panel {
+            background-color: #1e3a5f; /* Muted blue color */
+            padding: 10px 15px; /* Padding */
+        }
+
+        .back-button {
+            background-color: #003d7d; /* Button color */
+            color: white; /* Text color */
+        }
+
+        .back-button:hover {
+            background-color: #002f5d; /* Darker shade on hover */
+        }
+
+        .announcement-form {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            padding: 20px;
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Top Panel -->
+    <div class="top-panel d-flex justify-content-between align-items-center shadow-sm">
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="font-weight-bold text-light">Admin Dashboard</a>
+        <h1 class="h4 text-light">Make Announcement</h1>
+        <div></div> <!-- Empty div for spacing -->
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4 flex-grow-1">
+        <button onclick="window.history.back()" class="btn back-button mb-3">Back</button>
+
+        <form action="{{ url_for('admin.submit_announcement') }}" method="POST" class="announcement-form">
+            <div class="form-group">
+                <label for="announcement" class="font-weight-bold">Announcement:</label>
+                <textarea id="announcement" name="announcement" rows="5" class="form-control" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Announcement</button>
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-600 text-white py-4 mt-auto text-center">
+        <p>&copy; 2024 PGMS Kottayam. All Rights Reserved.</p>
+        <p>Contact: admin@pgmskottayam.in</p>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

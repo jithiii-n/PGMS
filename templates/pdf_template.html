@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-green-600 text-white p-4">
+        <h1 class="text-center text-2xl font-bold">Complaint Report</h1>
+    </header>
+
+    <!-- Content -->
+    <div class="container mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+        <div class="border-b border-gray-200 pb-4 mb-4">
+            <div class="mb-4">
+                <strong class="text-green-600">Date:</strong> {{ date }}
+            </div>
+            <div class="mb-4">
+                <strong class="text-green-600">Department:</strong> {{ department }}
+            </div>
+            <div class="mb-4">
+                <strong class="text-green-600">Report Details:</strong> {{ report_details }}
+            </div>
+            <div class="mb-4">
+                <strong class="text-green-600">Additional Information:</strong> {{ additional_info }}
+            </div>
+            <div class="mb-4">
+                <strong class="text-green-600">Officer in Charge:</strong> {{ officer_name }}
+            </div>
+            <div class="mb-4">
+                <strong class="text-green-600">Reference Number:</strong> {{ reference_no }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-sm text-gray-600 mt-8">
+        &copy; 2024 Your Organization Name. All rights reserved.
+    </footer>
+
+</body>
+</html>
